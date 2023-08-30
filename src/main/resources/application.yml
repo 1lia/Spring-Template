@@ -1,0 +1,62 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource: #todo DB 연결 수정
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ENC(7sFBc0SzAYv3t2Nz1vjhlg==)
+    password: ENC(HUSTQbmjhTxUUmKbOtiqJQ==)
+    
+
+  jpa: #JPA 설정
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl  #변수 이름을 컬럼명으로 사용
+      use-new-id-generator-mappings: false #DB에 키생성 위임하기  Spring 3.x부터 삭제
+    properties:
+      hibernate:
+        format_sql: true  #sql 콘솔에 출력 포맷
+        default_batch_fetch_size: 500 #일대다 컬렉션 조회 최적화
+      dialect: org.hibernate.dialect.MySQL8InnoDBDialect  #MySQL 방언 지정
+    open-in-view: false #영속성 컨텍스트의 생존 범위를 트랜잭션 범위로 한정함
+
+  servlet:
+    multipart:
+      max-file-size: 20MB #파일 업로드 크기
+      max-request-size: 100MB #파일 업로드 총합 크기
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher #swagger 설정
+
+  profiles:
+    active: prod # 실제 배포환경 에서는 SwaggerConfig profile prod설정하면 swagger 실행 안됨
+logging:
+  level:
+    com.app: debug #운영환경일때는 info todo 패키지 수정
+#    org.hibernate.sql: debug
+    org.hibernate.type: trace #
+
+feign: #feign
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 5000
+
+kakao: #kakao login
+  client:
+    id: ENC(6VI9yP0+stf2jvvU6HpMBbnJ15rBVLN1xMW6yu5SQizIkimAKOGN/cqpmWSxMMbP)
+    secret: ENC(WYrTGW8T+4UUYt4PrZ8VJUv7/kkU1dK6y0IhoHOqHU4h51HKkBxVRmds5VNMGEk2)
+
+
+token:
+  secret: ENC(loAf0q71S3R6qoGthcTl8HqYIRfe+nKreYrnIv+aGvr8EHMIzRiWy44hEHZc86wT) #임의의 문자열
+  access-token-expiration-time: 900000 #15분 1000(ms) * 60(s) * 15(m)
+  refresh-token-expiration-time: 1209600000 #2주 1000(ms) * 60(s) * 60(m) * 24(h) * 14(d)
+
+jasypt:
+  password: ${PASSWORD}
